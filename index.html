@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rajika Patel — Software Engineer</title>
+  <meta name="description" content="Portfolio of Rajika Patel — a journey through code, craft, and creation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Caveat:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+  <!-- SVG Filters for watercolor effects -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <filter id="watercolor" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" seed="2"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="watercolor-heavy" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="5" result="noise" seed="5"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="paper-texture">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" result="noise"/>
+        <feDiffuseLighting in="noise" lighting-color="#f5f0e8" surfaceScale="1.5" result="lit">
+          <feDistantLight azimuth="45" elevation="55"/>
+        </feDiffuseLighting>
+        <feComposite in="SourceGraphic" in2="lit" operator="arithmetic" k1="1" k2="0" k3="0" k4="0"/>
+      </filter>
+      <filter id="soft-glow">
+        <feGaussianBlur stdDeviation="8" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <style>
+    :root {
+      --parchment: #f4f0e8;
+      --parchment-dark: #e8e0d2;
+      --parchment-deep: #d9cebb;
+      --ink: #2e2a24;
+      --ink-soft: #4a453d;
+      --ink-light: #7a7268;
+      --ink-faint: #a89e92;
+      --sage: #7a9e7e;
+      --sage-dark: #5a7e5e;
+      --sage-deep: #3d5e40;
+      --sage-light: #a8c4aa;
+      --sage-mist: #c5d8c6;
+      --gold: #c4a265;
+      --gold-light: #d9bf88;
+      --gold-dark: #a88640;
+      --terracotta: #c28565;
+      --terracotta-light: #daa888;
+      --sky-wash: #b8c5b0;
+      --cloud: #d2cdbf;
+      --font-display: 'Cormorant Garamond', 'Georgia', serif;
+      --font-hand: 'Caveat', cursive;
+      --font-body: 'Lora', 'Georgia', serif;
+      --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--sage) var(--parchment);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--parchment);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
+    }
+
+    ::selection {
+      background: var(--sage-light);
+      color: var(--ink);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ═══════════════════════════════════════
+       PAPER TEXTURE OVERLAY
+    ═══════════════════════════════════════ */
+    .paper-grain {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      pointer-events: none;
+      opacity: 0.25;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    }
+
+    /* ═══════════════════════════════════════
+       LOADING / PROLOGUE
+    ═══════════════════════════════════════ */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: var(--parchment);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 1.2s ease, visibility 1.2s ease;
+    }
+
+    .loader.done {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--ink-light);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .loader-line {
+      width: 120px;
+      height: 1px;
+      background: var(--parchment-deep);
+      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loader-line::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0;
+      width: 0; height: 100%;
+      background: var(--sage);
+      animation: loadFill 2s var(--ease-out-expo) forwards;
+    }
+
+    @keyframes loadFill { to { width: 100%; } }
+
+    .loader-hand {
+      font-family: var(--font-hand);
+      font-size: 1.1rem;
+      color: var(--ink-faint);
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.8s forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .loader-hand {
+      transform: translateY(10px);
+    }
+
+    /* ═══════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.6s var(--ease-smooth);
+    }
+
+    nav.scrolled {
+      background: rgba(244, 240, 232, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--parchment-deep);
+      padding: 1rem 3rem;
+    }
+
+    nav.hidden { transform: translateY(-100%); }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--ink-light);
+      letter-spacing: 0.08em;
+      position: relative;
+      transition: color 0.4s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--sage);
+      transition: width 0.5s var(--ease-out-expo);
+    }
+
+    .nav-links a:hover { color: var(--sage-dark); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-menu-btn {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-menu-btn span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--ink-soft);
+    }
+
+    /* ═══════════════════════════════════════
+       WATERCOLOR WASH BACKGROUNDS
+    ═══════════════════════════════════════ */
+    .wash {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: url(#watercolor-heavy);
+    }
+
+    /* ═══════════════════════════════════════
+       TORN EDGE DIVIDERS
+    ═══════════════════════════════════════ */
+    .torn-edge {
+      position: relative;
+      z-index: 2;
+      margin-top: -3px;
+    }
+
+    .torn-edge svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ═══════════════════════════════════════
+       HERO / PROLOGUE
+    ═══════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg,
+        #a8b8a0 0%,
+        #8ea88a 15%,
+        #7a9e7e 25%,
+        #92ab8e 40%,
+        #b0bfa8 50%,
+        #c5cdb8 60%,
+        #d2cdbf 72%,
+        #ddd5c5 82%,
+        var(--parchment) 100%);
+    }
+
+    /* Watercolor cloud layers */
+    .hero-clouds {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .cloud-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cloud {
+      position: absolute;
+      border-radius: 40% 60% 55% 45% / 50% 40% 60% 50%;
+      opacity: 0.25;
+      filter: url(#watercolor);
+    }
+
+    .cloud-1 {
+      width: 70vw; height: 30vh;
+      background: linear-gradient(135deg, rgba(168,196,170,0.6), rgba(178,192,165,0.3));
+      top: 5%; left: -10%;
+      animation: cloudDrift 25s ease-in-out infinite alternate;
+    }
+
+    .cloud-2 {
+      width: 55vw; height: 25vh;
+      background: linear-gradient(135deg, rgba(197,216,198,0.5), rgba(210,205,191,0.3));
+      top: 15%; right: -15%;
+      animation: cloudDrift 30s ease-in-out infinite alternate-reverse;
+    }
+
+    .cloud-3 {
+      width: 80vw; height: 20vh;
+      background: linear-gradient(135deg, rgba(210,205,191,0.5), rgba(200,196,180,0.4));
+      top: 45%; left: -5%;
+      animation: cloudDrift 20s ease-in-out infinite alternate;
+    }
+
+    .cloud-4 {
+      width: 60vw; height: 18vh;
+      background: linear-gradient(135deg, rgba(180,200,178,0.3), rgba(190,186,170,0.4));
+      top: 60%; right: -10%;
+      animation: cloudDrift 35s ease-in-out infinite alternate-reverse;
+    }
+
+    .cloud-5 {
+      width: 90vw; height: 15vh;
+      background: linear-gradient(135deg, rgba(210,205,191,0.6), rgba(220,213,198,0.4));
+      top: 72%; left: 5%;
+    }
+
+    @keyframes cloudDrift {
+      0% { transform: translateX(0) scale(1); }
+      100% { transform: translateX(40px) scale(1.03); }
+    }
+
+    /* Handwritten text floating in sky */
+    .hero-handwritten {
+      position: absolute;
+      font-family: var(--font-hand);
+      color: var(--ink-faint);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hw-1 { top: 8%; right: 8%; font-size: 1.1rem; opacity: 0; transform: rotate(-3deg); }
+    .hw-2 { top: 14%; right: 12%; font-size: 1rem; opacity: 0; transform: rotate(-2deg); }
+    .hw-3 { top: 20%; right: 5%; font-size: 1.05rem; opacity: 0; transform: rotate(-4deg); }
+    .hw-4 { top: 26%; right: 10%; font-size: 0.95rem; opacity: 0; transform: rotate(-1deg); }
+    .hw-5 { top: 32%; right: 7%; font-size: 1rem; opacity: 0; transform: rotate(-3deg); }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-chapter {
+      font-family: var(--font-hand);
+      font-size: 1.1rem;
+      color: #4a453d;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero-title .line-1 {
+      font-size: clamp(3rem, 9vw, 8rem);
+      font-style: italic;
+      color: #2e2a24;
+    }
+
+    .hero-title .line-2 {
+      font-size: clamp(3.5rem, 11vw, 10rem);
+      font-weight: 500;
+      color: #2e2a24;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-title .word {
+      display: inline-block;
+      transform: translateY(110%);
+      opacity: 0;
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      color: #4a453d;
+      max-width: 560px;
+      margin: 2rem auto 0;
+      line-height: 1.8;
+      opacity: 0;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      opacity: 0;
+    }
+
+    .btn-parchment {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      color: #2e2a24;
+      padding: 0.9rem 2.5rem;
+      border: 1px solid #4a453d;
+      background: rgba(244, 240, 232, 0.15);
+      backdrop-filter: blur(4px);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s var(--ease-out-expo);
+      cursor: pointer;
+    }
+
+    .btn-parchment:hover {
+      background: var(--gold);
+      color: var(--parchment);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(196, 162, 101, 0.3);
+    }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0;
+    }
+
+    .hero-scroll-hint span {
+      font-family: var(--font-hand);
+      font-size: 0.9rem;
+      color: var(--ink-faint);
+    }
+
+    .scroll-quill {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--ink-faint), transparent);
+      position: relative;
+    }
+
+    .scroll-quill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -2px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--sage);
+      animation: quillDrop 2.5s ease-in-out infinite;
+    }
+
+    @keyframes quillDrop {
+      0% { top: 0; opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION STYLES
+    ═══════════════════════════════════════ */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8rem 3rem;
+    }
+
+    .chapter-label {
+      font-family: var(--font-hand);
+      font-size: 1rem;
+      color: var(--sage);
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title strong {
+      font-weight: 500;
+      font-style: normal;
+    }
+
+    /* Reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+    .stagger-5 { transition-delay: 0.5s; }
+    .stagger-6 { transition-delay: 0.6s; }
+
+    /* ═══════════════════════════════════════
+       ABOUT SECTION
+    ═══════════════════════════════════════ */
+    .about {
+      background: var(--parchment);
+      position: relative;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .about-portrait {
+      position: relative;
+    }
+
+    .portrait-frame {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .portrait-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .portrait-initials {
+      font-family: var(--font-display);
+      font-size: 7rem;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      line-height: 1;
+    }
+
+    .portrait-hint {
+      font-family: var(--font-hand);
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 1rem;
+    }
+
+    /* Watercolor corner dabs */
+    .portrait-dab {
+      position: absolute;
+      border-radius: 50%;
+      filter: url(#watercolor);
+      pointer-events: none;
+    }
+
+    .portrait-dab-1 {
+      width: 80px; height: 80px;
+      background: var(--sage);
+      opacity: 0.3;
+      top: -20px; left: -20px;
+    }
+
+    .portrait-dab-2 {
+      width: 60px; height: 60px;
+      background: var(--terracotta);
+      opacity: 0.2;
+      bottom: -15px; right: -15px;
+    }
+
+    .portrait-dab-3 {
+      width: 50px; height: 50px;
+      background: var(--gold);
+      opacity: 0.2;
+      top: 50%; right: -25px;
+    }
+
+    /* Decorative botanical line */
+    .portrait-botanical {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .portrait-botanical svg {
+      width: 60px;
+      height: 60px;
+    }
+
+    .portrait-botanical path {
+      fill: none;
+      stroke: var(--sage);
+      stroke-width: 1;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      transition: stroke-dashoffset 2s var(--ease-out-expo);
+    }
+
+    .portrait-botanical.drawn path {
+      stroke-dashoffset: 0;
+    }
+
+    .about-text p {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      line-height: 1.85;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--sage-dark);
+      font-size: 1.1em;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--parchment-deep);
+    }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--sage-dark);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: var(--font-hand);
+      font-size: 0.95rem;
+      color: var(--ink-faint);
+      margin-top: 0.3rem;
+    }
+
+    /* ═══════════════════════════════════════
+       SKILLS / CRAFT
+    ═══════════════════════════════════════ */
+    .skills {
+      background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dark) 50%, var(--parchment) 100%);
+      position: relative;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .skill-card {
+      background: rgba(244, 240, 232, 0.7);
+      border: 1px solid var(--parchment-deep);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s var(--ease-out-expo);
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(to right, var(--sage), var(--sage-light), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.8s var(--ease-out-expo);
+    }
+
+    .skill-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .skill-card:hover {
+      background: rgba(244, 240, 232, 1);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(90, 126, 94, 0.08);
+    }
+
+    .skill-card-icon {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-style: italic;
+      color: var(--sage);
+      margin-bottom: 1rem;
+    }
+
+    .skill-card-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-tag {
+      font-family: var(--font-hand);
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--parchment-deep);
+      background: rgba(255,255,255,0.3);
+      transition: all 0.3s;
+    }
+
+    .skill-card:hover .skill-tag {
+      border-color: var(--sage-light);
+      color: var(--sage-dark);
+    }
+
+    /* ═══════════════════════════════════════
+       PROJECTS / CHAPTERS
+    ═══════════════════════════════════════ */
+    .projects {
+      background: var(--parchment);
+      position: relative;
+    }
+
+    .project-list {
+      margin-top: 3rem;
+    }
+
+    .project-item {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 2.5rem;
+      align-items: center;
+      padding: 2.5rem 2rem;
+      border-bottom: 1px solid var(--parchment-deep);
+      position: relative;
+      cursor: pointer;
+      transition: all 0.5s var(--ease-out-expo);
+    }
+
+    .project-item:first-child {
+      border-top: 1px solid var(--parchment-deep);
+    }
+
+    .project-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(168, 196, 170, 0.08),
+        rgba(197, 216, 198, 0.04));
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .project-item:hover::before { opacity: 1; }
+
+    .project-item:hover {
+      padding-left: 3rem;
+    }
+
+    .project-chapter {
+      font-family: var(--font-hand);
+      font-size: 1.3rem;
+      color: var(--ink-faint);
+      transition: color 0.4s;
+    }
+
+    .project-item:hover .project-chapter {
+      color: var(--sage);
+    }
+
+    .project-info h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+      transition: color 0.4s;
+    }
+
+    .project-item:hover .project-info h3 {
+      color: var(--sage-dark);
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      max-width: 500px;
+      line-height: 1.6;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.6rem;
+    }
+
+    .project-tag {
+      font-family: var(--font-hand);
+      font-size: 0.8rem;
+      color: var(--ink-faint);
+      padding: 0.15rem 0.5rem;
+      border: 1px solid var(--parchment-deep);
+    }
+
+    .project-item:hover .project-tag {
+      border-color: var(--sage-light);
+      color: var(--sage-dark);
+    }
+
+    .project-arrow {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-style: italic;
+      color: var(--ink-faint);
+      transition: all 0.5s var(--ease-out-expo);
+    }
+
+    .project-item:hover .project-arrow {
+      color: var(--sage);
+      transform: translate(6px, -6px);
+    }
+
+    /* ═══════════════════════════════════════
+       EXPERIENCE / JOURNEY
+    ═══════════════════════════════════════ */
+    .experience {
+      background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+    }
+
+    .timeline {
+      margin-top: 3rem;
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: var(--parchment-deep);
+    }
+
+    .timeline-fill {
+      position: absolute;
+      left: 0; top: 0;
+      width: 1px; height: 0;
+      background: linear-gradient(to bottom, var(--sage), var(--sage-light));
+      transition: height 2s var(--ease-out-expo);
+    }
+
+    .timeline.animated .timeline-fill {
+      height: 100%;
+    }
+
+    .timeline-item {
+      padding: 2.5rem 0 2.5rem 2.5rem;
+      position: relative;
+      transition: transform 0.5s var(--ease-out-expo);
+    }
+
+    .timeline-item:hover {
+      transform: translateX(8px);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 3.2rem;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--parchment);
+      border: 1.5px solid var(--ink-faint);
+      transition: all 0.4s var(--ease-out-expo);
+      z-index: 2;
+    }
+
+    .timeline-item:hover::before {
+      background: var(--sage);
+      border-color: var(--sage);
+      box-shadow: 0 0 12px rgba(122, 158, 126, 0.4);
+      transform: scale(1.5);
+    }
+
+    .timeline-year {
+      font-family: var(--font-hand);
+      font-size: 1rem;
+      color: var(--sage);
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-role {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+    }
+
+    .timeline-company {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      color: var(--gold-dark);
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+      max-width: 500px;
+    }
+
+    /* ═══════════════════════════════════════
+       CONTACT / EPILOGUE
+    ═══════════════════════════════════════ */
+    .contact {
+      background: linear-gradient(180deg,
+        var(--parchment-dark) 0%,
+        #b0bfa8 30%,
+        #8ea88a 50%,
+        #7a9e7e 70%,
+        #6a8e6e 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact .section-inner {
+      padding: 10rem 3rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .contact .section-title {
+      color: var(--parchment);
+    }
+
+    .contact .chapter-label {
+      color: var(--parchment-deep);
+    }
+
+    .contact-subtitle {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.1rem;
+      color: rgba(244, 240, 232, 0.7);
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      line-height: 1.8;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-btn {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      color: var(--parchment);
+      padding: 0.9rem 2.2rem;
+      border: 1px solid rgba(244, 240, 232, 0.3);
+      background: rgba(244, 240, 232, 0.05);
+      transition: all 0.5s var(--ease-out-expo);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--parchment);
+      transform: translateY(101%);
+      transition: transform 0.5s var(--ease-out-expo);
+    }
+
+    .contact-btn:hover {
+      border-color: var(--parchment);
+      color: var(--sage-dark);
+    }
+
+    .contact-btn:hover::before {
+      transform: translateY(0);
+    }
+
+    .contact-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Contact cloud layers */
+    .contact-clouds {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .contact-cloud {
+      position: absolute;
+      border-radius: 40% 60% 50% 50% / 50% 40% 60% 50%;
+      filter: url(#watercolor);
+      opacity: 0.15;
+    }
+
+    .contact-cloud-1 {
+      width: 50vw; height: 25vh;
+      background: rgba(244,240,232,0.3);
+      top: 10%; left: -5%;
+      animation: cloudDrift 20s ease-in-out infinite alternate;
+    }
+
+    .contact-cloud-2 {
+      width: 40vw; height: 20vh;
+      background: rgba(197,216,198,0.2);
+      bottom: 15%; right: -8%;
+      animation: cloudDrift 25s ease-in-out infinite alternate-reverse;
+    }
+
+    /* Handwritten quote */
+    .contact-handwritten {
+      font-family: var(--font-hand);
+      font-size: 1.1rem;
+      color: rgba(244, 240, 232, 0.4);
+      margin-top: 4rem;
+    }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    .footer {
+      background: #3d5e40;
+      padding: 2.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--sage-light);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-right {
+      font-family: var(--font-hand);
+      font-size: 0.95rem;
+      color: var(--sage-mist);
+    }
+
+    /* ═══════════════════════════════════════
+       FLOATING CANVAS (particles/leaves)
+    ═══════════════════════════════════════ */
+    #leaf-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .portrait-frame { max-width: 350px; }
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .nav-menu-btn { display: flex; }
+      .section-inner { padding: 5rem 1.5rem; }
+      .about-stats { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+      .project-item { grid-template-columns: 1fr; gap: 0.8rem; padding: 2rem 1rem; }
+      .project-item:hover { padding-left: 1.5rem; }
+      .project-chapter, .project-arrow { display: none; }
+      .contact-links { flex-direction: column; align-items: center; }
+      .footer { flex-direction: column; gap: 0.8rem; text-align: center; }
+      .hero-handwritten { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Paper texture -->
+  <div class="paper-grain"></div>
+
+  <!-- Floating leaf/particle canvas -->
+  <canvas id="leaf-canvas"></canvas>
+
+  <!-- Loading screen -->
+  <div class="loader" id="loader">
+    <div class="loader-title">Rajika Patel</div>
+    <div class="loader-line"></div>
+    <div class="loader-hand">a journey through code & craft</div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">Rajika Patel</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Craft</a></li>
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#experience">Journey</a></li>
+      <li><a href="#contact">Connect</a></li>
+    </ul>
+    <button class="nav-menu-btn" id="nav-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-clouds">
+      <div class="cloud-layer" data-speed="0.02">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+      </div>
+      <div class="cloud-layer" data-speed="0.04">
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+      </div>
+      <div class="cloud-layer">
+        <div class="cloud cloud-5"></div>
+      </div>
+    </div>
+
+    <!-- Handwritten text floating in sky like the Max Mara journal entries -->
+    <div class="hero-handwritten hw-1" id="hw1">from Jaipur to IIT Kharagpur to Delhi</div>
+    <div class="hero-handwritten hw-2" id="hw2">12 million parameters, 97% accuracy</div>
+    <div class="hero-handwritten hw-3" id="hw3">building intelligence, one transformer at a time</div>
+    <div class="hero-handwritten hw-4" id="hw4">AI, deep learning, computer vision</div>
+    <div class="hero-handwritten hw-5" id="hw5">I am still becoming.</div>
+
+    <div class="hero-content">
+      <div class="hero-chapter" id="hero-chapter">Prologue</div>
+      <h1 class="hero-title" id="hero-title">
+        <span class="line line-1"><span class="word">Rajika</span></span>
+        <span class="line line-2"><span class="word">Patel</span></span>
+      </h1>
+      <p class="hero-subtitle" id="hero-subtitle">
+        Walk through the pages of an AI developer's journey —
+        where intelligent systems meet thoughtful design, and every algorithm
+        tells a story of innovation and purpose.
+      </p>
+      <div class="hero-cta" id="hero-cta">
+        <a href="#about" class="btn-parchment">Begin the Journey</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint" id="hero-scroll">
+      <span>scroll gently</span>
+      <div class="scroll-quill"></div>
+    </div>
+  </section>
+
+  <!-- Torn edge divider -->
+  <div class="torn-edge">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none" style="display:block; width:100%; height:40px;">
+      <path d="M0,0 Q60,35 120,8 Q180,42 240,5 Q300,38 360,12 Q420,40 480,6 Q540,36 600,10 Q660,42 720,4 Q780,38 840,14 Q900,40 960,8 Q1020,36 1080,12 Q1140,42 1200,6 Q1260,38 1320,10 Q1380,42 1440,0 L1440,40 L0,40 Z" fill="var(--parchment)"/>
+    </svg>
+  </div>
+
+  <!-- ═══════════════ ABOUT ═══════════════ -->
+  <section class="about" id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-portrait reveal">
+          <div class="portrait-frame" id="portrait-tilt">
+            <div class="portrait-inner">
+              <img src="WhatsApp Image 2026-02-27 at 12.32.51.jpeg" alt="Rajika Patel" class="portrait-img">
+            </div>
+          </div>
+          <div class="portrait-dab portrait-dab-1"></div>
+          <div class="portrait-dab portrait-dab-2"></div>
+          <div class="portrait-dab portrait-dab-3"></div>
+          <div class="portrait-botanical" id="botanical">
+            <svg viewBox="0 0 60 60">
+              <path d="M30 55 Q25 40 30 30 Q20 35 10 30 M30 30 Q35 25 30 15 Q40 25 50 20 M30 15 Q28 8 30 0"/>
+            </svg>
+          </div>
+        </div>
+        <div class="about-text-col">
+          <div class="chapter-label reveal stagger-1">Chapter I</div>
+          <h2 class="section-title reveal stagger-2">The one who<br><strong>builds with care</strong></h2>
+          <div class="about-text">
+            <p class="reveal stagger-3">
+              I'm a Senior Executive AI Developer at Jaipuria Institute of Management with a
+              B.Tech in Computer Science &amp; Engineering (AI Specialization) from JK Lakshmipat University — <em>driven, curious, and builders-minded</em>. I build
+              intelligent systems, from white-labeled AI chat platforms to GPT models trained from scratch, blending deep learning with thoughtful engineering.
+            </p>
+            <p class="reveal stagger-4">
+              From research at IIT Kharagpur to shipping RESTful APIs at startups,
+              I've honed a problem-solving mindset through building real products —
+              placement management systems, computer vision pipelines,
+              and AI-powered platforms serving students and faculty alike.
+            </p>
+          </div>
+          <div class="about-stats reveal stagger-5">
+            <div>
+              <div class="stat-num"><span class="counter" data-value="4">0</span>+</div>
+              <div class="stat-label">years of craft</div>
+            </div>
+            <div>
+              <div class="stat-num"><span class="counter" data-value="6">0</span>+</div>
+              <div class="stat-label">projects shipped</div>
+            </div>
+            <div>
+              <div class="stat-num"><span class="counter" data-value="15">0</span>+</div>
+              <div class="stat-label">tools mastered</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SKILLS ═══════════════ -->
+  <section class="skills" id="skills">
+    <div class="section-inner">
+      <div class="chapter-label reveal">Chapter II</div>
+      <h2 class="section-title reveal stagger-1">The tools of<br><strong>the trade</strong></h2>
+      <div class="skills-grid">
+        <div class="skill-card reveal stagger-2">
+          <div class="skill-card-icon">I.</div>
+          <h3 class="skill-card-title">Languages & Frameworks</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Java</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">C++</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">HTML/CSS</span>
+            <span class="skill-tag">Java Spring</span>
+            <span class="skill-tag">SpringBoot</span>
+          </div>
+        </div>
+        <div class="skill-card reveal stagger-3">
+          <div class="skill-card-icon">II.</div>
+          <h3 class="skill-card-title">AI & Machine Learning</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Artificial Intelligence</span>
+            <span class="skill-tag">Machine Learning</span>
+            <span class="skill-tag">Large Language Models</span>
+            <span class="skill-tag">Deep Learning</span>
+            <span class="skill-tag">Computer Vision</span>
+          </div>
+        </div>
+        <div class="skill-card reveal stagger-4">
+          <div class="skill-card-icon">III.</div>
+          <h3 class="skill-card-title">Libraries & Tools</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">TensorFlow</span>
+            <span class="skill-tag">Keras</span>
+            <span class="skill-tag">HuggingFace</span>
+            <span class="skill-tag">Transformer</span>
+            <span class="skill-tag">Pandas</span>
+            <span class="skill-tag">NumPy</span>
+            <span class="skill-tag">Matplotlib</span>
+          </div>
+        </div>
+        <div class="skill-card reveal stagger-5">
+          <div class="skill-card-icon">IV.</div>
+          <h3 class="skill-card-title">Web & DevOps</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Express</span>
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">REST APIs</span>
+            <span class="skill-tag">CI/CD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PROJECTS ═══════════════ -->
+  <section class="projects" id="projects">
+    <div class="section-inner">
+      <div class="chapter-label reveal">Chapter III</div>
+      <h2 class="section-title reveal stagger-1">Pages I've<br><strong>written</strong></h2>
+      <div class="project-list">
+        <div class="project-item reveal stagger-2">
+          <span class="project-chapter">i.</span>
+          <div class="project-info">
+            <h3>JChat — AI Chat Platform</h3>
+            <p class="project-desc">Developed and launched a white-labeled AI chat platform integrating multiple AI models to deliver intelligent, context-aware assistance for students and faculty at Jaipuria Institute.</p>
+            <div class="project-tags">
+              <span class="project-tag">AI</span>
+              <span class="project-tag">LLMs</span>
+              <span class="project-tag">DevOps</span>
+              <span class="project-tag">CI/CD</span>
+            </div>
+          </div>
+          <span class="project-arrow">&rarr;</span>
+        </div>
+        <div class="project-item reveal stagger-3">
+          <span class="project-chapter">ii.</span>
+          <div class="project-info">
+            <h3>Placement & Internship MS</h3>
+            <p class="project-desc">Built a centralized system replacing manual record management for 300+ students — with user dashboards for tracking internships/placements and a secure admin panel with JWT authentication.</p>
+            <div class="project-tags">
+              <span class="project-tag">React</span>
+              <span class="project-tag">Express</span>
+              <span class="project-tag">Node.js</span>
+              <span class="project-tag">PostgreSQL</span>
+            </div>
+          </div>
+          <span class="project-arrow">&rarr;</span>
+        </div>
+        <div class="project-item reveal stagger-4">
+          <span class="project-chapter">iii.</span>
+          <div class="project-info">
+            <h3>Gita GPT</h3>
+            <p class="project-desc">Built a GPT-1 model from scratch, constructing each transformer layer step-by-step. Trained on a custom Bhagwat Gita dataset with ~12 million parameters, achieving 97% accuracy.</p>
+            <div class="project-tags">
+              <span class="project-tag">Python</span>
+              <span class="project-tag">Transformer</span>
+              <span class="project-tag">LLM</span>
+            </div>
+          </div>
+          <span class="project-arrow">&rarr;</span>
+        </div>
+        <div class="project-item reveal stagger-5">
+          <span class="project-chapter">iv.</span>
+          <div class="project-info">
+            <h3>Traffic Analysis System</h3>
+            <p class="project-desc">Developed a real-time traffic analysis system for car detection and traffic flow prediction using computer vision, with advanced model optimization for accuracy and efficiency.</p>
+            <div class="project-tags">
+              <span class="project-tag">Python</span>
+              <span class="project-tag">YOLOv8</span>
+              <span class="project-tag">Roboflow</span>
+              <span class="project-tag">Computer Vision</span>
+            </div>
+          </div>
+          <span class="project-arrow">&rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ EXPERIENCE ═══════════════ -->
+  <section class="experience" id="experience">
+    <div class="section-inner">
+      <div class="chapter-label reveal">Chapter IV</div>
+      <h2 class="section-title reveal stagger-1">The path<br><strong>walked so far</strong></h2>
+      <div class="timeline" id="timeline">
+        <div class="timeline-fill"></div>
+        <div class="timeline-item reveal stagger-2">
+          <div class="timeline-year">May 2025 &mdash; Present</div>
+          <div class="timeline-role">Senior Executive AI Developer</div>
+          <div class="timeline-company">Jaipuria Institute of Management, Delhi</div>
+          <p class="timeline-desc">Developed and launched "JChat," a white-labeled AI chat platform integrating multiple AI models. Collaborated across teams to integrate AI tools into the LMS. Managed DevOps including CI/CD pipelines, cloud deployment, and system monitoring.</p>
+        </div>
+        <div class="timeline-item reveal stagger-3">
+          <div class="timeline-year">Oct 2024 &mdash; May 2025</div>
+          <div class="timeline-role">Software Engineer Intern</div>
+          <div class="timeline-company">December Technology Private Limited | FUDR, Jaipur</div>
+          <p class="timeline-desc">Implemented RESTful APIs for referral code, referral validation, and brand validation functionalities. Deployed and tested APIs ensuring seamless integration, achieving successful merging into the primary system.</p>
+        </div>
+        <div class="timeline-item reveal stagger-4">
+          <div class="timeline-year">2021 &mdash; 2025</div>
+          <div class="timeline-role">B.Tech in CSE (AI Specialization)</div>
+          <div class="timeline-company">JK Lakshmipat University, Jaipur &mdash; CGPA: 8.5</div>
+          <p class="timeline-desc">Served as Teaching Assistant for Programming and Data Structures &amp; Algorithms. Built multiple projects spanning full-stack development, deep learning, and computer vision.</p>
+        </div>
+        <div class="timeline-item reveal stagger-5">
+          <div class="timeline-year">May 2023 &mdash; Aug 2023</div>
+          <div class="timeline-role">Python Developer & Research Intern</div>
+          <div class="timeline-company">IIT Kharagpur, West Bengal</div>
+          <p class="timeline-desc">Developed Python-based programs to process large datasets, significantly boosting efficiency. Created a GUI application to read elevation data from large vector files (10k+ points) and generate reservoir boundary files.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Torn edge into contact -->
+  <div class="torn-edge" style="margin-top:-3px; position:relative; z-index:2;">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none" style="display:block; width:100%; height:40px; transform:rotate(180deg);">
+      <path d="M0,0 Q80,38 160,10 Q240,42 320,5 Q400,35 480,15 Q560,40 640,8 Q720,38 800,12 Q880,40 960,6 Q1040,35 1120,14 Q1200,42 1280,4 Q1360,36 1440,0 L1440,40 L0,40 Z" fill="var(--parchment-dark)"/>
+    </svg>
+  </div>
+
+  <!-- ═══════════════ CONTACT ═══════════════ -->
+  <section class="contact" id="contact">
+    <div class="contact-clouds">
+      <div class="contact-cloud contact-cloud-1"></div>
+      <div class="contact-cloud contact-cloud-2"></div>
+    </div>
+    <div class="section-inner">
+      <div class="chapter-label reveal">Epilogue</div>
+      <h2 class="section-title reveal stagger-1">Let's write the<br><strong>next chapter</strong></h2>
+      <p class="contact-subtitle reveal stagger-2">
+        I'm always open to new stories — whether it's an interesting project,
+        a shared curiosity, or simply a conversation about craft.
+      </p>
+      <div class="contact-links reveal stagger-3">
+        <a href="mailto:rajikap28@gmail.com" class="contact-btn"><span>Email Me</span></a>
+        <a href="https://github.com/rajika" target="_blank" class="contact-btn"><span>GitHub</span></a>
+        <a href="https://linkedin.com/in/rajika" target="_blank" class="contact-btn"><span>LinkedIn</span></a>
+        <a href="Rajika_Patel .pdf" class="contact-btn"><span>Resume</span></a>
+      </div>
+      <div class="contact-handwritten reveal stagger-4">
+        "Every line of code is a sentence in a larger story."
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-left">&copy; 2026 Rajika Patel</div>
+    <div class="footer-right">crafted with intention</div>
+  </footer>
+
+  <script>
+    // ═══════════════════════════════════════
+    // LOADER
+    // ═══════════════════════════════════════
+    const loader = document.getElementById('loader');
+    setTimeout(() => {
+      loader.classList.add('done');
+      startHeroSequence();
+    }, 2400);
+
+    // ═══════════════════════════════════════
+    // HERO ANIMATION SEQUENCE
+    // ═══════════════════════════════════════
+    function startHeroSequence() {
+      // Chapter label
+      const chapter = document.getElementById('hero-chapter');
+      setTimeout(() => {
+        chapter.style.transition = 'opacity 1.2s ease';
+        chapter.style.opacity = '1';
+      }, 200);
+
+      // Title words
+      const words = document.querySelectorAll('.hero-title .word');
+      words.forEach((w, i) => {
+        setTimeout(() => {
+          w.style.transition = 'all 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+          w.style.transform = 'translateY(0)';
+          w.style.opacity = '1';
+        }, 500 + i * 250);
+      });
+
+      // Subtitle
+      const sub = document.getElementById('hero-subtitle');
+      setTimeout(() => {
+        sub.style.transition = 'opacity 1.5s ease';
+        sub.style.opacity = '1';
+      }, 1200);
+
+      // CTA
+      const cta = document.getElementById('hero-cta');
+      setTimeout(() => {
+        cta.style.transition = 'opacity 1s ease';
+        cta.style.opacity = '1';
+      }, 1700);
+
+      // Scroll hint
+      const scroll = document.getElementById('hero-scroll');
+      setTimeout(() => {
+        scroll.style.transition = 'opacity 1s ease';
+        scroll.style.opacity = '1';
+      }, 2200);
+
+      // Handwritten text — staggered like journal entries appearing
+      const hws = ['hw1','hw2','hw3','hw4','hw5'];
+      hws.forEach((id, i) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          el.style.transition = 'opacity 2s ease';
+          el.style.opacity = '0.35';
+        }, 1500 + i * 400);
+      });
+    }
+
+    // ═══════════════════════════════════════
+    // FLOATING LEAF / PAPER PARTICLES
+    // ═══════════════════════════════════════
+    const leafCanvas = document.getElementById('leaf-canvas');
+    const lctx = leafCanvas.getContext('2d');
+
+    function resizeLeafCanvas() {
+      leafCanvas.width = window.innerWidth;
+      leafCanvas.height = window.innerHeight;
+    }
+    resizeLeafCanvas();
+    window.addEventListener('resize', resizeLeafCanvas);
+
+    class Leaf {
+      constructor() { this.reset(true); }
+
+      reset(initial) {
+        this.x = Math.random() * leafCanvas.width;
+        this.y = initial ? Math.random() * leafCanvas.height : -20;
+        this.size = Math.random() * 4 + 2;
+        this.speedY = Math.random() * 0.3 + 0.1;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.02;
+        this.opacity = Math.random() * 0.15 + 0.05;
+        this.drift = Math.random() * 2;
+        this.driftSpeed = Math.random() * 0.005 + 0.002;
+        this.time = Math.random() * 100;
+        // Earthy/sage color
+        const colors = ['122,158,126','168,196,170','196,162,101','194,133,101'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      update() {
+        this.time += this.driftSpeed;
+        this.x += this.speedX + Math.sin(this.time) * this.drift * 0.1;
+        this.y += this.speedY;
+        this.rotation += this.rotSpeed;
+
+        if (this.y > leafCanvas.height + 20) this.reset(false);
+      }
+
+      draw() {
+        lctx.save();
+        lctx.translate(this.x, this.y);
+        lctx.rotate(this.rotation);
+        lctx.globalAlpha = this.opacity;
+        lctx.fillStyle = `rgba(${this.color}, 1)`;
+
+        // Tiny leaf shape
+        lctx.beginPath();
+        lctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
+        lctx.fill();
+
+        lctx.restore();
+      }
+    }
+
+    const leaves = [];
+    const leafCount = Math.min(35, Math.floor(window.innerWidth / 40));
+    for (let i = 0; i < leafCount; i++) leaves.push(new Leaf());
+
+    function animateLeaves() {
+      lctx.clearRect(0, 0, leafCanvas.width, leafCanvas.height);
+      leaves.forEach(l => { l.update(); l.draw(); });
+      requestAnimationFrame(animateLeaves);
+    }
+    animateLeaves();
+
+    // ═══════════════════════════════════════
+    // SCROLL REVEAL
+    // ═══════════════════════════════════════
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => revealObserver.observe(el));
+
+    // ═══════════════════════════════════════
+    // COUNTER ANIMATION
+    // ═══════════════════════════════════════
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.counter').forEach(c => {
+            const target = parseInt(c.dataset.value);
+            const duration = 2000;
+            const start = performance.now();
+            function tick(now) {
+              const p = Math.min((now - start) / duration, 1);
+              const eased = 1 - Math.pow(1 - p, 4);
+              c.textContent = Math.floor(eased * target);
+              if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+          });
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.about-stats').forEach(el => counterObserver.observe(el));
+
+    // ═══════════════════════════════════════
+    // TIMELINE FILL ANIMATION
+    // ═══════════════════════════════════════
+    const timeline = document.getElementById('timeline');
+    const timelineObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+          timelineObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    if (timeline) timelineObs.observe(timeline);
+
+    // ═══════════════════════════════════════
+    // BOTANICAL LINE DRAW
+    // ═══════════════════════════════════════
+    const botanical = document.getElementById('botanical');
+    const botanicalObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('drawn');
+          botanicalObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    if (botanical) botanicalObs.observe(botanical);
+
+    // ═══════════════════════════════════════
+    // PORTRAIT 3D TILT
+    // ═══════════════════════════════════════
+    const portrait = document.getElementById('portrait-tilt');
+    if (portrait) {
+      portrait.addEventListener('mousemove', (e) => {
+        const rect = portrait.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        portrait.style.transform = `perspective(600px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg)`;
+        portrait.style.transition = 'transform 0.1s ease';
+      });
+      portrait.addEventListener('mouseleave', () => {
+        portrait.style.transform = 'perspective(600px) rotateY(0) rotateX(0)';
+        portrait.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+      });
+    }
+
+    // ═══════════════════════════════════════
+    // NAVIGATION
+    // ═══════════════════════════════════════
+    const nav = document.getElementById('nav');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y > 100) {
+        nav.classList.add('scrolled');
+        nav.classList.toggle('hidden', y > lastScroll + 5);
+        if (y < lastScroll - 5) nav.classList.remove('hidden');
+      } else {
+        nav.classList.remove('scrolled', 'hidden');
+      }
+      lastScroll = y;
+    }, { passive: true });
+
+    // ═══════════════════════════════════════
+    // SMOOTH SCROLL NAV LINKS
+    // ═══════════════════════════════════════
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // ═══════════════════════════════════════
+    // PARALLAX CLOUDS ON SCROLL
+    // ═══════════════════════════════════════
+    const cloudLayers = document.querySelectorAll('.cloud-layer[data-speed]');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      cloudLayers.forEach(layer => {
+        const speed = parseFloat(layer.dataset.speed);
+        layer.style.transform = `translateY(${y * speed}px)`;
+      });
+    }, { passive: true });
+  </script>
+
+</body>
+</html>
